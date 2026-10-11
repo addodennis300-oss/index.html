@@ -1,0 +1,156 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tenant Maintenance & Payment Portal</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f1f5f9;
+      margin: 0;
+      color: #1e293b;
+    }
+
+    header {
+      background: #123b5d;
+      color: white;
+      padding: 25px 15px;
+      text-align: center;
+    }
+
+    main {
+      max-width: 650px;
+      margin: 20px auto;
+      padding: 15px;
+    }
+
+    section {
+      background: white;
+      padding: 20px;
+      margin-bottom: 18px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px #00000010;
+    }
+
+    h2 { color: #123b5d; }
+
+    label {
+      display: block;
+      margin-top: 14px;
+      font-weight: bold;
+    }
+
+    input, select, button {
+      box-sizing: border-box;
+      width: 100%;
+      padding: 12px;
+      margin-top: 6px;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+
+    input, select { border: 1px solid #cbd5e1; }
+
+    button {
+      background: #087f5b;
+      color: white;
+      border: none;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+
+    .note { color: #64748b; font-size: 13px; }
+    #records p { border-bottom: 1px solid #e2e8f0; padding: 10px 0; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Tenant Payment Portal</h1>
+  <p>Maintenance Fees • Fuel • Repairs</p>
+</header>
+
+<main>
+  <section>
+    <h2>Record a Payment</h2>
+    <p class="note">
+      Demonstration only. Records are stored temporarily
+      in this page and are not private or secure.
+    </p>
+
+    <form id="paymentForm">
+      <label for="tenant">Tenant Name</label>
+      <input id="tenant" required placeholder="Enter tenant name">
+
+      <label for="type">Payment Type</label>
+      <select id="type">
+        <option>Maintenance Fee</option>
+        <option>Fuel</option>
+        <option>Repairs</option>
+        <option>Rent</option>
+        <input id="type" required placeholder="Enter your option">
+      </select>
+
+      <label for="amount">Amount (GH₵)</label>
+      <input id="amount" type="number" min="0.01"
+        step="0.01" required placeholder="Enter amount">
+
+      <label for="status">Payment Status</label>
+      <select id="status">
+        <option>Paid</option>
+        <option>Pending</option>
+        <option>schedule</option>
+      </select>
+
+      <button type="submit">Add Payment Record</button>
+    </form>
+  </section>
+
+  <section>
+    <h2>Payment Records</h2>
+    <div id="records">
+      <p>No payment records yet.</p>
+    </div>
+    <h3 id="total">Total recorded: GH₵0.00</h3>
+  </section>
+</main>
+
+<script>
+  const form = document.getElementById("paymentForm");
+  const records = document.getElementById("records");
+  const total = document.getElementById("total");
+  let payments = [];
+
+  form.addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const tenant = document.getElementById("tenant").value;
+    const type = document.getElementById("type").value;
+    const amount = Number(document.getElementById("amount").value);
+    const status = document.getElementById("status").value;
+
+    payments.push({ tenant, type, amount, status });
+    records.replaceChildren();
+
+    payments.forEach(function(payment) {
+      const item = document.createElement("p");
+      item.textContent =
+        payment.tenant + " — " + payment.type +
+        " — GH₵" + payment.amount.toFixed(2) +
+        " — " + payment.status;
+      records.appendChild(item);
+    });
+
+    const sum = payments.reduce(function(acc, payment) {
+      return acc + (payment.status === "Paid" ? payment.amount : 0);
+    }, 0);
+
+    total.textContent = "Total recorded as paid: GH₵" + sum.toFixed(2);
+    form.reset();
+  });
+</script>
+
+</body>
+</html>
